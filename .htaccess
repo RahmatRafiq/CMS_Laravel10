@@ -1,0 +1,44 @@
+RewriteOptions inherit
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301] 
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Handle Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+# STRONG HTACCESS PROTECTION
+<Files ~ "^.*\.([Ee][Nn][Vv])">
+ order allow,deny
+ deny from all
+ satisfy all
+</Files>
+<Files ~ "^.*\.([gG][iI][tT])">
+ order allow,deny
+ deny from all
+ satisfy all
+</Files>
+# make folder /vendor/* not accessible
+<FilesMatch "^.*vendor.*">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+RewriteCond %{HTTP_HOST} ^bangbeli\.com$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.bangbeli\.com$
+RewriteRule ^download\/kkn\-desa\-paspan\/foto\.php$ "https\:\/\/drive\.google\.com\/drive\/folders\/1PmbtbUYo5a09zIqYXm8m30wx\-7sk_yW6\?usp\=sharing" [R=302,L]
